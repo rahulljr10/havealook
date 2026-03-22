@@ -1,0 +1,1638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rahul Khatri — Founder, LIVELY</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #070708;
+    --off-black: #0f0f11;
+    --card-bg: #111114;
+    --border: #1e1e24;
+    --white: #f4f3f0;
+    --muted: #6b6b78;
+    --accent: #ff4d00;
+    --accent-dim: rgba(255,77,0,0.12);
+    --accent-glow: rgba(255,77,0,0.35);
+    --blue: #3b82f6;
+    --pulse-ring: rgba(255,77,0,0.6);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'Syne', sans-serif;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* CUSTOM CURSOR */
+  .cursor {
+    position: fixed;
+    width: 10px;
+    height: 10px;
+    background: var(--accent);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.08s ease, width 0.2s ease, height 0.2s ease, background 0.2s ease;
+    mix-blend-mode: normal;
+  }
+  .cursor-trail {
+    position: fixed;
+    width: 32px;
+    height: 32px;
+    border: 1px solid rgba(255,77,0,0.4);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: transform 0.18s ease, opacity 0.3s ease;
+  }
+  body:hover .cursor { opacity: 1; }
+
+  /* NOISE OVERLAY */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9997;
+    opacity: 0.4;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.4rem 3rem;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.3s, background 0.3s;
+  }
+  nav.scrolled {
+    background: rgba(7,7,8,0.92);
+    backdrop-filter: blur(20px);
+    border-bottom-color: var(--border);
+  }
+  .nav-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.4rem;
+    letter-spacing: 0.12em;
+    color: var(--white);
+    text-decoration: none;
+  }
+  .nav-logo span { color: var(--accent); }
+  .nav-links {
+    display: flex;
+    gap: 2.5rem;
+    list-style: none;
+  }
+  .nav-links a {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--white); }
+  .nav-cta {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--black);
+    background: var(--accent);
+    padding: 0.55rem 1.3rem;
+    text-decoration: none;
+    transition: opacity 0.2s;
+  }
+  .nav-cta:hover { opacity: 0.85; }
+
+  /* HERO */
+  #hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 0 3rem 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg-lines {
+    position: absolute;
+    inset: 0;
+    background-image:
+      repeating-linear-gradient(90deg, rgba(255,77,0,0.03) 0px, rgba(255,77,0,0.03) 1px, transparent 1px, transparent 80px),
+      repeating-linear-gradient(0deg, rgba(255,77,0,0.03) 0px, rgba(255,77,0,0.03) 1px, transparent 1px, transparent 80px);
+    pointer-events: none;
+  }
+
+  .hero-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.2s forwards;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .hero-eyebrow::before {
+    content: '';
+    width: 40px;
+    height: 1px;
+    background: var(--accent);
+    display: inline-block;
+  }
+
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(5rem, 12vw, 14rem);
+    line-height: 0.88;
+    letter-spacing: -0.01em;
+    color: var(--white);
+    opacity: 0;
+    animation: fadeUp 0.9s 0.35s forwards;
+  }
+  .hero-title .accent-line {
+    -webkit-text-stroke: 2px var(--accent);
+    color: transparent;
+  }
+
+  .hero-bottom {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-top: 3rem;
+    opacity: 0;
+    animation: fadeUp 0.9s 0.55s forwards;
+  }
+  .hero-desc {
+    max-width: 420px;
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--muted);
+    font-weight: 400;
+  }
+  .hero-desc strong { color: var(--white); }
+  .hero-stats {
+    display: flex;
+    gap: 3rem;
+    text-align: right;
+  }
+  .hero-stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.8rem;
+    line-height: 1;
+    color: var(--white);
+  }
+  .hero-stat-num span { color: var(--accent); }
+  .hero-stat-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 0.25rem;
+  }
+
+  /* SCROLL INDICATOR */
+  .scroll-indicator {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    opacity: 0;
+    animation: fadeIn 1s 1.2s forwards;
+  }
+  .scroll-line {
+    width: 1px;
+    height: 50px;
+    background: linear-gradient(to bottom, var(--accent), transparent);
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 0.3; transform: scaleY(1); }
+    50% { opacity: 1; transform: scaleY(1.3); }
+  }
+
+  /* MARQUEE */
+  .marquee-section {
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 1.1rem 0;
+    overflow: hidden;
+    background: var(--off-black);
+  }
+  .marquee-track {
+    display: flex;
+    gap: 3rem;
+    animation: marquee 25s linear infinite;
+    white-space: nowrap;
+  }
+  .marquee-item {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 0.95rem;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+  .marquee-dot { color: var(--accent); font-size: 1.5rem; line-height: 1; }
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  /* SECTION STYLES */
+  section {
+    padding: 6rem 3rem;
+  }
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .section-label::before {
+    content: '';
+    width: 30px;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  /* ABOUT */
+  #about {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6rem;
+    align-items: start;
+  }
+  .about-left .big-quote {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-size: clamp(2rem, 3.5vw, 3.2rem);
+    line-height: 1.25;
+    color: var(--white);
+    margin-top: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  .about-left .big-quote em {
+    color: var(--accent);
+    font-style: normal;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.05em;
+    letter-spacing: 0.03em;
+  }
+  .about-body {
+    color: var(--muted);
+    font-size: 1rem;
+    line-height: 1.8;
+    margin-bottom: 2rem;
+  }
+  .about-body p { margin-bottom: 1rem; }
+  .about-body strong { color: var(--white); }
+  .about-photo {
+    position: relative;
+  }
+  .photo-frame {
+    width: 100%;
+    aspect-ratio: 3/4;
+    position: relative;
+    overflow: hidden;
+  }
+  .photo-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(30%);
+    transition: filter 0.4s;
+  }
+  .photo-frame:hover img { filter: grayscale(0%); }
+  .photo-frame::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border: 1px solid var(--border);
+    pointer-events: none;
+  }
+  .photo-badge {
+    position: absolute;
+    bottom: -1.5rem;
+    right: -1.5rem;
+    background: var(--accent);
+    color: var(--black);
+    padding: 1rem 1.4rem;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.1rem;
+    letter-spacing: 0.08em;
+    text-align: center;
+    line-height: 1.3;
+  }
+
+  /* LIVELY SECTION */
+  #lively {
+    background: var(--off-black);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .lively-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 4rem;
+  }
+  .lively-title-block .section-label { margin-bottom: 1.5rem; }
+  .lively-h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3.5rem, 7vw, 8rem);
+    line-height: 0.9;
+    letter-spacing: 0.01em;
+    color: var(--white);
+  }
+  .lively-h2 .live-dot {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    background: var(--accent);
+    border-radius: 50%;
+    margin-right: 0.2em;
+    position: relative;
+    top: -0.1em;
+    animation: livePulse 1.5s ease-in-out infinite;
+  }
+  @keyframes livePulse {
+    0%, 100% { box-shadow: 0 0 0 0 var(--pulse-ring); }
+    50% { box-shadow: 0 0 0 12px rgba(255,77,0,0); }
+  }
+  .lively-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    text-align: right;
+  }
+  .lively-link {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    justify-content: flex-end;
+    transition: color 0.2s;
+  }
+  .lively-link:hover { color: var(--accent); }
+  .lively-link::after { content: '↗'; font-size: 0.9em; }
+
+  .lively-tagline {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-size: 1.5rem;
+    color: var(--muted);
+    border-left: 3px solid var(--accent);
+    padding-left: 1.5rem;
+    margin-bottom: 3rem;
+    line-height: 1.5;
+  }
+
+  .lively-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    margin-bottom: 4rem;
+  }
+  .lively-card {
+    background: var(--card-bg);
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.3s;
+  }
+  .lively-card:hover { background: #161619; }
+  .lively-card::before {
+    content: attr(data-num);
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 4rem;
+    color: rgba(255,255,255,0.04);
+    line-height: 1;
+    transition: color 0.3s;
+  }
+  .lively-card:hover::before { color: rgba(255,77,0,0.08); }
+  .card-icon {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  .card-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 0.75rem;
+    letter-spacing: 0.02em;
+  }
+  .card-text {
+    font-size: 0.85rem;
+    line-height: 1.7;
+    color: var(--muted);
+  }
+  .card-accent-tag {
+    display: inline-block;
+    margin-top: 1rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid rgba(255,77,0,0.3);
+    padding: 0.25rem 0.6rem;
+  }
+
+  /* PRODUCT SHOWCASE */
+  .product-showcase {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--border);
+  }
+  .product-card {
+    background: var(--card-bg);
+    padding: 2.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .product-card-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1rem;
+  }
+  .product-card-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 3rem;
+    color: var(--white);
+    letter-spacing: 0.03em;
+    line-height: 1;
+    margin-bottom: 1rem;
+  }
+  .product-card-desc {
+    font-size: 0.9rem;
+    color: var(--muted);
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+  }
+  .product-feature-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .product-feature-list li {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .product-feature-list li::before {
+    content: '—';
+    color: var(--accent);
+  }
+
+  /* MOCKUP SCREEN */
+  .app-mockup {
+    background: #0a0a0c;
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 1.5rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--muted);
+    min-height: 320px;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .mockup-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .mockup-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.3rem;
+    letter-spacing: 0.1em;
+    color: var(--white);
+  }
+  .mockup-live-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: var(--accent);
+    color: var(--black);
+    font-weight: 600;
+    padding: 0.2rem 0.6rem;
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    border-radius: 2px;
+  }
+  .mockup-live-dot {
+    width: 6px;
+    height: 6px;
+    background: var(--black);
+    border-radius: 50%;
+    animation: blink 1s ease-in-out infinite;
+  }
+  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+  .mockup-product-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    background: rgba(255,255,255,0.03);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .mockup-product-row:hover { background: rgba(255,77,0,0.07); }
+  .product-thumb {
+    width: 40px;
+    height: 40px;
+    border-radius: 6px;
+    object-fit: cover;
+    flex-shrink: 0;
+    background: var(--border);
+  }
+  .product-info { flex: 1; }
+  .product-name { color: var(--white); font-size: 0.72rem; margin-bottom: 0.2rem; }
+  .product-price { color: var(--accent); font-size: 0.68rem; }
+  .buy-btn {
+    background: var(--accent);
+    color: var(--black);
+    font-weight: 600;
+    padding: 0.35rem 0.75rem;
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border: none;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: opacity 0.2s;
+  }
+  .buy-btn:hover { opacity: 0.85; }
+
+  /* EXPERIENCE */
+  #experience {
+    border-top: 1px solid var(--border);
+  }
+  .exp-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3rem, 6vw, 7rem);
+    line-height: 0.9;
+    margin-bottom: 4rem;
+    color: var(--white);
+  }
+
+  .exp-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .exp-item {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 3rem;
+    padding: 2.5rem 0;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    transition: padding-left 0.3s;
+  }
+  .exp-item:hover { padding-left: 1rem; }
+  .exp-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 0;
+    background: var(--accent);
+    transition: width 0.3s;
+    opacity: 0.4;
+  }
+  .exp-item:hover::before { width: 3px; }
+  .exp-date {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    padding-top: 0.2rem;
+  }
+  .exp-current {
+    display: inline-block;
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid rgba(255,77,0,0.4);
+    padding: 0.15rem 0.5rem;
+    margin-top: 0.5rem;
+  }
+  .exp-company {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.5rem;
+    letter-spacing: 0.05em;
+    color: var(--white);
+    margin-bottom: 0.25rem;
+  }
+  .exp-role {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-bottom: 1rem;
+    font-weight: 400;
+  }
+  .exp-bullets {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .exp-bullets li {
+    font-size: 0.85rem;
+    color: var(--muted);
+    line-height: 1.6;
+    display: flex;
+    gap: 0.75rem;
+  }
+  .exp-bullets li::before {
+    content: '↳';
+    color: var(--accent);
+    flex-shrink: 0;
+    font-size: 0.8rem;
+    margin-top: 0.1rem;
+  }
+
+  /* SKILLS */
+  #skills {
+    background: var(--off-black);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .skills-header {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    margin-bottom: 4rem;
+  }
+  .skills-h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3rem, 6vw, 7rem);
+    line-height: 0.9;
+    color: var(--white);
+  }
+  .skills-intro {
+    font-size: 1rem;
+    line-height: 1.8;
+    color: var(--muted);
+    align-self: flex-end;
+  }
+
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--border);
+  }
+  .skill-cell {
+    background: var(--card-bg);
+    padding: 1.5rem;
+    transition: background 0.2s;
+  }
+  .skill-cell:hover { background: #181820; }
+  .skill-category {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.75rem;
+  }
+  .skill-name {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 0.3rem;
+  }
+  .skill-bar-track {
+    height: 2px;
+    background: var(--border);
+    margin-top: 0.75rem;
+    position: relative;
+  }
+  .skill-bar-fill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    background: var(--accent);
+    transition: width 1.5s cubic-bezier(0.17, 0.55, 0.55, 1);
+    width: 0;
+  }
+  .skill-bar-fill.animated { /* set by JS */ }
+
+  /* YC SECTION */
+  #yc {
+    border-top: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6rem;
+    align-items: center;
+  }
+  .yc-left {}
+  .yc-h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3rem, 5.5vw, 6.5rem);
+    line-height: 0.88;
+    color: var(--white);
+    margin-bottom: 2rem;
+  }
+  .yc-h2 span { color: var(--accent); }
+  .yc-body {
+    font-size: 0.95rem;
+    color: var(--muted);
+    line-height: 1.8;
+    margin-bottom: 2rem;
+  }
+  .yc-body p { margin-bottom: 1rem; }
+  .yc-body strong { color: var(--white); }
+  .yc-cta {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--black);
+    background: var(--white);
+    padding: 0.85rem 2rem;
+    text-decoration: none;
+    transition: background 0.2s, color 0.2s;
+  }
+  .yc-cta:hover { background: var(--accent); color: var(--black); }
+
+  .yc-right {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    background: var(--border);
+  }
+  .yc-stat-row {
+    background: var(--card-bg);
+    padding: 2rem;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 1.5rem;
+    align-items: center;
+    transition: background 0.2s;
+  }
+  .yc-stat-row:hover { background: #161619; }
+  .yc-stat-big {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 3.5rem;
+    color: var(--accent);
+    line-height: 1;
+    min-width: 100px;
+  }
+  .yc-stat-desc { font-size: 0.85rem; color: var(--muted); line-height: 1.6; }
+  .yc-stat-desc strong { color: var(--white); display: block; margin-bottom: 0.2rem; font-size: 0.9rem; }
+
+  /* VIDEO SECTION */
+  #building {
+    border-top: 1px solid var(--border);
+    overflow: hidden;
+  }
+  .building-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 3rem;
+  }
+  .building-h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3rem, 6vw, 7rem);
+    line-height: 0.9;
+    color: var(--white);
+  }
+  .building-sub {
+    font-size: 0.9rem;
+    color: var(--muted);
+    max-width: 300px;
+    line-height: 1.6;
+    text-align: right;
+  }
+
+  .content-cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--border);
+  }
+  .content-card {
+    background: var(--card-bg);
+    aspect-ratio: 9/16;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+  }
+  .content-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(0.5);
+    transition: filter 0.4s, transform 0.5s;
+  }
+  .content-card:hover img {
+    filter: brightness(0.35);
+    transform: scale(1.05);
+  }
+  .content-card-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 1.5rem;
+  }
+  .content-card-day {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 0.9rem;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    margin-bottom: 0.4rem;
+  }
+  .content-card-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1.4;
+  }
+  .play-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50px;
+    height: 50px;
+    border: 2px solid rgba(255,255,255,0.5);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .play-icon::after {
+    content: '';
+    border-left: 14px solid white;
+    border-top: 9px solid transparent;
+    border-bottom: 9px solid transparent;
+    margin-left: 4px;
+  }
+  .content-card:hover .play-icon { opacity: 1; }
+
+  /* CONTACT */
+  #contact {
+    border-top: 1px solid var(--border);
+    background: var(--off-black);
+    text-align: center;
+    padding: 8rem 3rem;
+  }
+  .contact-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+  }
+  .contact-h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(4rem, 10vw, 12rem);
+    line-height: 0.88;
+    color: var(--white);
+    margin-bottom: 2rem;
+  }
+  .contact-h2 span { color: var(--accent); }
+  .contact-tagline {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-size: 1.3rem;
+    color: var(--muted);
+    margin-bottom: 3rem;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.6;
+  }
+  .contact-links {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .contact-btn {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-decoration: none;
+    padding: 0.85rem 2rem;
+    transition: all 0.2s;
+  }
+  .contact-btn.primary {
+    background: var(--accent);
+    color: var(--black);
+  }
+  .contact-btn.primary:hover { opacity: 0.85; }
+  .contact-btn.secondary {
+    border: 1px solid var(--border);
+    color: var(--muted);
+  }
+  .contact-btn.secondary:hover { border-color: var(--muted); color: var(--white); }
+
+  /* FOOTER */
+  footer {
+    padding: 2rem 3rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .footer-copy {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+  .footer-links {
+    display: flex;
+    gap: 2rem;
+  }
+  .footer-links a {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .footer-links a:hover { color: var(--white); }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(40px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  /* OBSERVE ANIMATIONS */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+  .reveal-delay-4 { transition-delay: 0.4s; }
+
+  /* HORIZONTAL LINE DECORATION */
+  .h-rule {
+    width: 100%;
+    height: 1px;
+    background: var(--border);
+    position: relative;
+  }
+  .h-rule::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 80px;
+    background: var(--accent);
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-trail" id="cursorTrail"></div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#" class="nav-logo">RK<span>.</span></a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#lively">LIVELY</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#yc">YC</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a href="/cdn-cgi/l/email-protection#d2a0b3baa7beb9bab3a6a0bbe2e5e2e592b5bfb3bbbefcb1bdbf" class="nav-cta">Get in touch</a>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg-lines"></div>
+
+  <div class="hero-eyebrow">Founder · Builder · Indore, India</div>
+
+  <h1 class="hero-title">
+    RAHUL<br>
+    <span class="accent-line">KHATRI</span>
+  </h1>
+
+  <div class="hero-bottom">
+    <p class="hero-desc">
+      <strong>Digital marketer turned founder.</strong> 2.5 years inside the system that exploits Indian brands — now building the exit ramp. Creating <strong>LIVELY</strong>, India's first intent-native live commerce platform.
+    </p>
+    <div class="hero-stats">
+      <div>
+        <div class="hero-stat-num">2<span>.5</span></div>
+        <div class="hero-stat-label">Years in<br>Digital Mktg</div>
+      </div>
+      <div>
+        <div class="hero-stat-num">₹<span>12B</span></div>
+        <div class="hero-stat-label">India D2C<br>Market Size</div>
+      </div>
+      <div>
+        <div class="hero-stat-num">0<span>→1</span></div>
+        <div class="hero-stat-label">Building<br>LIVELY</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="scroll-indicator">
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-section">
+  <div class="marquee-track" id="marquee">
+    <div class="marquee-item"><span class="marquee-dot">◆</span> LIVE COMMERCE FOR INDIA</div>
+    <div class="marquee-item"><span class="marquee-dot">◆</span> DIGITAL MARKETING SPECIALIST</div>
+    <div class="marquee-item"><span class="marquee-dot">◆</span> FOUNDER · LIVELY</div>
+    <div class="marquee-item"><span class="marquee-dot">◆</span> SEO & PERFORMANCE MARKETING</div>
+    <div class="marquee-item"><span class="marquee-dot">◆</span> APPLYING · Y COMBINATOR</div>
+    <div class="marquee-item"><span class="marquee-dot">◆</span> GOLIVELY.IN</div>
+    <div class="marquee-item"><span class="marquee-dot">◆</span> LIVE COMMERCE FOR INDIA</div>
+    <div class="marquee-item"><span class="marquee-dot">◆</span> DIGITAL MARKETING SPECIALIST</div>
+    <div class="marquee-item"><span class="marquee-dot">◆</span> FOUNDER · LIVELY</div>
+    <div class="marquee-item"><span class="marquee-dot">◆</span> SEO & PERFORMANCE MARKETING</div>
+    <div class="marquee-item"><span class="marquee-dot">◆</span> APPLYING · Y COMBINATOR</div>
+    <div class="marquee-item"><span class="marquee-dot">◆</span> GOLIVELY.IN</div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-left reveal">
+    <div class="section-label">About the Founder</div>
+    <div class="big-quote">
+      I spent years inside the machine that <em>EXPLOITS</em> Indian brands. Now I'm building the exit.
+    </div>
+    <div class="about-body">
+      <p>I'm <strong>Rahul Khatri</strong> — a digital marketing professional who has watched, from the inside, how Meta and Google's rising ad costs chip away at the margins of genuinely good Indian brands.</p>
+      <p>After 2.5 years managing SEO, performance campaigns, and retention strategies for multiple brands — I stopped running ads for platforms that don't care about the brands depending on them.</p>
+      <p>I'm now building <strong>LIVELY</strong> — a live commerce platform where Indian brands sell directly to buyers through live sessions and shoppable videos. No ads. Commission-only. Your customers, your data, your growth.</p>
+    </div>
+    <a href="https://golively.in" target="_blank" class="nav-cta" style="text-decoration:none; display:inline-block; margin-top:0.5rem;">Visit golively.in ↗</a>
+  </div>
+
+  <div class="about-photo reveal reveal-delay-2">
+    <div class="photo-frame">
+      <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=80" alt="Rahul Khatri">
+    </div>
+    <div class="photo-badge">
+      FOUNDER<br>LIVELY
+    </div>
+  </div>
+</section>
+
+<!-- LIVELY SECTION -->
+<section id="lively">
+  <div class="lively-header reveal">
+    <div class="lively-title-block">
+      <div class="section-label">The Startup</div>
+      <h2 class="lively-h2">
+        <span class="live-dot"></span>LIVELY
+      </h2>
+    </div>
+    <div class="lively-links">
+      <a href="https://golively.in" target="_blank" class="lively-link">golively.in</a>
+      <a href="https://rahul-digital-vibe.lovable.app/" target="_blank" class="lively-link">Digital Profile</a>
+    </div>
+  </div>
+
+  <div class="lively-tagline reveal">
+    "If you want entertainment, go to Instagram.<br>If you want to buy or sell, come to LIVELY."
+  </div>
+
+  <div class="lively-grid reveal">
+    <div class="lively-card" data-num="01">
+      <div class="card-icon">🎯</div>
+      <div class="card-title">The Problem</div>
+      <div class="card-text">Meta CAC up 40–60% in 3 years. Brands renting growth, not building it. Influencer ROI is guesswork. The customer relationship belongs to the platform, not the brand.</div>
+      <div class="card-accent-tag">Urgent & Current</div>
+    </div>
+    <div class="lively-card" data-num="02">
+      <div class="card-icon">⚡</div>
+      <div class="card-title">The Solution</div>
+      <div class="card-text">A mobile-first live commerce platform where brands sell through live sessions and shoppable Drops. No ad spend required. Commission-only model — brands pay only when a sale happens.</div>
+      <div class="card-accent-tag">Commerce-First</div>
+    </div>
+    <div class="lively-card" data-num="03">
+      <div class="card-icon">🏹</div>
+      <div class="card-title">The Moat</div>
+      <div class="card-text">Trained in-house live selling hosts — not influencers. Operational depth that cannot be bought. Behavior-first product design built for India, not copied from China.</div>
+      <div class="card-accent-tag">Defensible</div>
+    </div>
+    <div class="lively-card" data-num="04">
+      <div class="card-icon">📈</div>
+      <div class="card-title">The Market</div>
+      <div class="card-text">India D2C at $12B growing 40% annually. China's live commerce = 20% of all e-commerce. India hasn't cracked it yet. LIVELY is building the infrastructure before the wave hits.</div>
+      <div class="card-accent-tag">₹12B+ TAM</div>
+    </div>
+    <div class="lively-card" data-num="05">
+      <div class="card-icon">🔑</div>
+      <div class="card-title">Why Now</div>
+      <div class="card-text">UPI habitual. D2C ecosystem exploded. Short-form video native. Post-COVID trust matured. Tier 2/3 smartphone scale. Brands actively looking for ad alternatives.</div>
+      <div class="card-accent-tag">6 Catalysts</div>
+    </div>
+    <div class="lively-card" data-num="06">
+      <div class="card-icon">💡</div>
+      <div class="card-title">Why Meta Can't Copy</div>
+      <div class="card-text">Instagram built live just good enough to say it exists. Effective live commerce would cannibalize their ad revenue. That structural conflict is LIVELY's biggest advantage.</div>
+      <div class="card-accent-tag">Structural Edge</div>
+    </div>
+  </div>
+
+  <div class="h-rule" style="margin: 3rem 0;"></div>
+
+  <!-- PRODUCT SHOWCASE -->
+  <div class="section-label reveal">Product Architecture</div>
+  <div class="product-showcase reveal reveal-delay-1">
+    <div class="product-card">
+      <div class="product-card-label">Product 01</div>
+      <div class="product-card-title">LIVE<br>SESSIONS</div>
+      <div class="product-card-desc">Brands go live directly from their LIVELY profile. Three distinct modes — Sell Live, Connect Live, Launch Live — each scored on the right metrics, not vanity numbers.</div>
+      <ul class="product-feature-list">
+        <li>Product pinning + one-tap buy</li>
+        <li>Real-time Q&A and objection handling</li>
+        <li>Remind Me for warm pre-live audience</li>
+        <li>Category-based discovery rows</li>
+      </ul>
+    </div>
+    <div class="product-card" style="background: #0f0f12;">
+      <div class="product-card-label">Product 02</div>
+      <div class="product-card-title">DROPS</div>
+      <div class="product-card-desc">Short-form 15–45s shoppable videos. Product tagging is mandatory, not optional. Algorithm rewards purchase intent signals — taps, completions, orders — not engagement.</div>
+      <ul class="product-feature-list">
+        <li>Full-screen vertical, one Drop per screen</li>
+        <li>No likes, comments, or vanity metrics</li>
+        <li>Commerce-first algorithm, not dopamine</li>
+        <li>One product card per Drop with Buy CTA</li>
+      </ul>
+    </div>
+    <div class="product-card" style="grid-column: span 2; background: var(--card-bg);">
+      <div class="product-card-label">Live Mockup Preview</div>
+
+      <!-- APP MOCKUP -->
+      <div style="display: grid; grid-template-columns: 300px 1fr; gap: 3rem; align-items: start;">
+        <div class="app-mockup">
+          <div class="mockup-header">
+            <span class="mockup-logo">LIVELY</span>
+            <span class="mockup-live-badge"><span class="mockup-live-dot"></span> LIVE NOW</span>
+          </div>
+          <div style="font-size:0.65rem; color: var(--muted); text-align:center; padding: 0.5rem 0; border-bottom: 1px solid var(--border); margin-bottom: 0.5rem;">
+            ◉ 247 viewers · Silk Route Apparel
+          </div>
+          <div class="mockup-product-row">
+            <div class="product-thumb" style="background: linear-gradient(135deg, #2a2a2a, #1a1a1a);"></div>
+            <div class="product-info">
+              <div class="product-name">Linen Kurta — Summer '25</div>
+              <div class="product-price">₹1,299 · 12 left</div>
+            </div>
+            <button class="buy-btn">BUY</button>
+          </div>
+          <div class="mockup-product-row">
+            <div class="product-thumb" style="background: linear-gradient(135deg, #1f1f2e, #111);"></div>
+            <div class="product-info">
+              <div class="product-name">Indigo Shirt — Block Print</div>
+              <div class="product-price">₹899 · 8 left</div>
+            </div>
+            <button class="buy-btn">BUY</button>
+          </div>
+          <div style="margin-top: auto; text-align: center; padding-top: 1rem; font-size: 0.65rem; color: var(--muted);">
+            🔔 Set Reminder for next live →
+          </div>
+        </div>
+        <div>
+          <div style="font-family:'Bebas Neue',sans-serif; font-size:2rem; color:var(--white); margin-bottom:1rem; letter-spacing:0.05em;">THE HOST SYSTEM</div>
+          <div style="font-size:0.85rem; color:var(--muted); line-height:1.8; margin-bottom:1.5rem;">
+            LIVELY hires and trains professional live selling hosts — salaried roles, not gig work. These are people who know how to handle objections in real time, create authentic urgency, and close sales. <span style="color:var(--white);">This is the core operational moat</span> — and the hardest thing for any competitor to replicate quickly.
+          </div>
+          <div style="display:flex; flex-direction:column; gap:0.75rem;">
+            <div style="display:flex; gap:1rem; align-items:center; font-family:'DM Mono',monospace; font-size:0.72rem; color:var(--muted);">
+              <span style="color:var(--accent); font-size:1.2rem;">✓</span> Trained hosts assigned by category fit
+            </div>
+            <div style="display:flex; gap:1rem; align-items:center; font-family:'DM Mono',monospace; font-size:0.72rem; color:var(--muted);">
+              <span style="color:var(--accent); font-size:1.2rem;">✓</span> Brand can use own vetted hosts
+            </div>
+            <div style="display:flex; gap:1rem; align-items:center; font-family:'DM Mono',monospace; font-size:0.72rem; color:var(--muted);">
+              <span style="color:var(--accent); font-size:1.2rem;">✓</span> Influencer ≠ Seller — LIVELY knows the difference
+            </div>
+            <div style="display:flex; gap:1rem; align-items:center; font-family:'DM Mono',monospace; font-size:0.72rem; color:var(--muted);">
+              <span style="color:var(--accent); font-size:1.2rem;">✓</span> No ad dependency — commission on actual sales
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="section-label reveal">Work History</div>
+  <h2 class="exp-title reveal">
+    EXPERI-<br>ENCE
+  </h2>
+
+  <div class="exp-timeline">
+    <div class="exp-item reveal">
+      <div>
+        <div class="exp-date">Jun 2024 –<br>Present</div>
+        <div class="exp-current">● Current</div>
+      </div>
+      <div>
+        <div class="exp-company">OHK Toysmart (Khilonamart)</div>
+        <div class="exp-role">Digital Marketing Specialist</div>
+        <ul class="exp-bullets">
+          <li>Led end-to-end digital marketing — SEO, keyword research, on-page optimization, backlink building. Ranked multiple keywords in Top 10 Google results.</li>
+          <li>Planned and optimized Google Ads & Meta Ads campaigns focused on conversions and lead quality.</li>
+          <li>Executed WhatsApp and email retention marketing initiatives.</li>
+          <li>Created high-performing creatives, reels, and short-form videos using Canva and Photoshop.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="exp-item reveal">
+      <div>
+        <div class="exp-date">May 2023 –<br>Apr 2024</div>
+      </div>
+      <div>
+        <div class="exp-company">Abbot Media</div>
+        <div class="exp-role">Digital Marketing Specialist</div>
+        <ul class="exp-bullets">
+          <li>Executed SEO-led strategies to improve organic visibility and rankings across multiple client accounts.</li>
+          <li>Managed paid campaigns on Google Ads and Meta for diverse client verticals.</li>
+          <li>Developed and scheduled content calendars for social media distribution.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="exp-item reveal">
+      <div>
+        <div class="exp-date">Jan 2023 –<br>Jun 2023</div>
+      </div>
+      <div>
+        <div class="exp-company">Maestros Infotech</div>
+        <div class="exp-role">Digital Marketing Executive</div>
+        <ul class="exp-bullets">
+          <li>Supported digital marketing execution through content creation, website optimization, and social posts.</li>
+          <li>Conducted market research and audience analysis to sharpen campaign effectiveness.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="exp-item reveal" style="background: var(--accent-dim); border: 1px solid rgba(255,77,0,0.2);">
+      <div>
+        <div class="exp-date">2024 –<br>Present</div>
+        <div class="exp-current">● Founding</div>
+      </div>
+      <div>
+        <div class="exp-company" style="color:var(--accent);">LIVELY</div>
+        <div class="exp-role">Founder · Solo</div>
+        <ul class="exp-bullets">
+          <li>Conceived, researched, and architected India's first intent-native live commerce platform from scratch.</li>
+          <li>Built complete product vision, business model, revenue architecture, and go-to-market strategy.</li>
+          <li>Developed MVPs on Replit and Mocha; React Native build in progress with Supabase backend.</li>
+          <li>Building in public via reel series documenting the founding journey for brand and investor visibility.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="skills-header">
+    <div>
+      <div class="section-label reveal">Toolkit</div>
+      <h2 class="skills-h2 reveal">SKILLS<br>&amp; STACK</h2>
+    </div>
+    <div class="skills-intro reveal reveal-delay-2">
+      Every skill is an ingredient in the LIVELY thesis. The brand growth system I've operated from the inside is the system I'm now building against.
+    </div>
+  </div>
+
+  <div class="skills-grid reveal">
+    <div class="skill-cell">
+      <div class="skill-category">Core</div>
+      <div class="skill-name">SEO (On/Off/Tech)</div>
+      <div class="skill-bar-track"><div class="skill-bar-fill" data-width="92%"></div></div>
+    </div>
+    <div class="skill-cell">
+      <div class="skill-category">Paid</div>
+      <div class="skill-name">Google Ads</div>
+      <div class="skill-bar-track"><div class="skill-bar-fill" data-width="88%"></div></div>
+    </div>
+    <div class="skill-cell">
+      <div class="skill-category">Paid</div>
+      <div class="skill-name">Meta Ads</div>
+      <div class="skill-bar-track"><div class="skill-bar-fill" data-width="90%"></div></div>
+    </div>
+    <div class="skill-cell">
+      <div class="skill-category">Content</div>
+      <div class="skill-name">Copywriting</div>
+      <div class="skill-bar-track"><div class="skill-bar-fill" data-width="85%"></div></div>
+    </div>
+    <div class="skill-cell">
+      <div class="skill-category">Retention</div>
+      <div class="skill-name">WhatsApp Marketing</div>
+      <div class="skill-bar-track"><div class="skill-bar-fill" data-width="82%"></div></div>
+    </div>
+    <div class="skill-cell">
+      <div class="skill-category">Retention</div>
+      <div class="skill-name">Email Marketing</div>
+      <div class="skill-bar-track"><div class="skill-bar-fill" data-width="80%"></div></div>
+    </div>
+    <div class="skill-cell">
+      <div class="skill-category">Creative</div>
+      <div class="skill-name">Canva / Photoshop</div>
+      <div class="skill-bar-track"><div class="skill-bar-fill" data-width="87%"></div></div>
+    </div>
+    <div class="skill-cell">
+      <div class="skill-category">Analytics</div>
+      <div class="skill-name">Google Analytics</div>
+      <div class="skill-bar-track"><div class="skill-bar-fill" data-width="84%"></div></div>
+    </div>
+    <div class="skill-cell" style="grid-column: span 2; background: var(--accent-dim); border: none;">
+      <div class="skill-category" style="color:var(--accent);">Founder Layer</div>
+      <div class="skill-name" style="font-size:1.1rem;">Product Architecture · Business Model Design</div>
+      <div style="font-family:'DM Mono',monospace; font-size:0.7rem; color:var(--muted); margin-top:0.5rem;">Vision → Strategy → Execution. End-to-end.</div>
+    </div>
+    <div class="skill-cell" style="grid-column: span 2; background: var(--accent-dim); border: none;">
+      <div class="skill-category" style="color:var(--accent);">Founder Layer</div>
+      <div class="skill-name" style="font-size:1.1rem;">D2C Brand Ecosystem · Go-to-Market · Investor Narrative</div>
+      <div style="font-family:'DM Mono',monospace; font-size:0.7rem; color:var(--muted); margin-top:0.5rem;">2.5 years of brand pain converted into a founding thesis.</div>
+    </div>
+  </div>
+</section>
+
+<!-- BUILDING IN PUBLIC -->
+<section id="building">
+  <div class="building-header reveal">
+    <h2 class="building-h2">BUILDING<br>IN PUBLIC</h2>
+    <div class="building-sub">Documenting the LIVELY founding journey — calm, founder-to-founder, no hype.</div>
+  </div>
+
+  <div class="content-cards reveal">
+    <div class="content-card">
+      <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=400&q=80" alt="Day 1">
+      <div class="content-card-overlay">
+        <div class="content-card-day">DAY 01 — PUBLISHED</div>
+        <div class="content-card-title">What I'm building and why a digital marketer is exiting the system</div>
+      </div>
+      <div class="play-icon"></div>
+    </div>
+    <div class="content-card">
+      <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&q=80" alt="Day 2">
+      <div class="content-card-overlay">
+        <div class="content-card-day">DAY 02 — RECORDED</div>
+        <div class="content-card-title">Live selling vision: the $500B China category India hasn't cracked</div>
+      </div>
+      <div class="play-icon"></div>
+    </div>
+    <div class="content-card">
+      <img src="https://images.unsplash.com/photo-1563986768494-4dee2763ff3f?w=400&q=80" alt="Day 3">
+      <div class="content-card-overlay">
+        <div class="content-card-day">DAY 03 — RECORDED</div>
+        <div class="content-card-title">China breakdown: what behavior translates and what doesn't</div>
+      </div>
+      <div class="play-icon"></div>
+    </div>
+    <div class="content-card">
+      <img src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=400&q=80" alt="Day 4">
+      <div class="content-card-overlay">
+        <div class="content-card-day">DAY 04 — COMING</div>
+        <div class="content-card-title">Why nobody has cracked live selling in India yet — the 3 root causes</div>
+      </div>
+      <div class="play-icon"></div>
+    </div>
+  </div>
+</section>
+
+<!-- YC SECTION -->
+<section id="yc">
+  <div class="yc-left reveal">
+    <div class="section-label">Y Combinator</div>
+    <h2 class="yc-h2">WHY<br><span>Y COMBI-<br>NATOR</span></h2>
+    <div class="yc-body">
+      <p>LIVELY is not a lifestyle business. It is an attempt to <strong>restructure how a billion-dollar market works</strong> — and that requires the sharpest thinking, fastest network, and most credible validator on earth.</p>
+      <p>YC's portfolio includes companies that have rebuilt categories from scratch. <strong>LIVELY is doing exactly that</strong> — creating an entirely new intent-based commerce category in India, a market YC has consistently called one of the most important of the next decade.</p>
+      <p>The founding insight is not theoretical. It comes from <strong>2.5 years of watching brands bleed margin</strong> on platforms that have no incentive to make it cheaper. That lived experience is rare. YC bets on founders who have earned their insight.</p>
+    </div>
+    <a href="/cdn-cgi/l/email-protection#beccdfd6cbd2d5d6dfcaccd78e898e89fed9d3dfd7d290ddd1d3" class="yc-cta">Connect with Rahul →</a>
+  </div>
+
+  <div class="yc-right reveal reveal-delay-2">
+    <div class="yc-stat-row">
+      <div class="yc-stat-big">$12B</div>
+      <div class="yc-stat-desc">
+        <strong>India D2C Market</strong>
+        Growing at 40% annually. Thousands of founder-led brands actively feeling ad fatigue and looking for alternatives right now.
+      </div>
+    </div>
+    <div class="yc-stat-row">
+      <div class="yc-stat-big">40%</div>
+      <div class="yc-stat-desc">
+        <strong>Meta CAC Increase (3 years)</strong>
+        Brands that were profitable on the same budgets 2 years ago are now struggling. The pain is acute and current.
+      </div>
+    </div>
+    <div class="yc-stat-row">
+      <div class="yc-stat-big">20%</div>
+      <div class="yc-stat-desc">
+        <strong>China E-commerce via Live Commerce</strong>
+        The category is proven. The behavior exists. India is 3–5 years behind with the right infrastructure not yet built.
+      </div>
+    </div>
+    <div class="yc-stat-row">
+      <div class="yc-stat-big">0→1</div>
+      <div class="yc-stat-desc">
+        <strong>Founding from Insight</strong>
+        Not a technical founder copying a trend. A domain expert who lived the problem and designed the solution from first principles.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-eyebrow reveal">Ready to Connect</div>
+  <h2 class="contact-h2 reveal">LET'S<br><span>TALK</span></h2>
+  <p class="contact-tagline reveal">Whether you're a brand founder, an investor, or a YC partner — I want to build the future of how Indian brands grow.</p>
+  <div class="contact-links reveal">
+    <a href="/cdn-cgi/l/email-protection#ef9d8e879a8384878e9b9d86dfd8dfd8af88828e8683c18c8082" class="contact-btn primary"><span class="__cf_email__" data-cfemail="ed9f8c85988186858c999f84dddadddaad8a808c8481c38e8280">[email&#160;protected]</span></a>
+    <a href="tel:+918319029608" class="contact-btn secondary">+91 83190 29608</a>
+    <a href="https://golively.in" target="_blank" class="contact-btn secondary">golively.in ↗</a>
+    <a href="https://rahul-digital-vibe.lovable.app/" target="_blank" class="contact-btn secondary">Digital Profile ↗</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-copy">© 2025 Rahul Khatri · Building LIVELY</div>
+  <div class="footer-links">
+    <a href="https://golively.in" target="_blank">LIVELY</a>
+    <a href="/cdn-cgi/l/email-protection#b1c3d0d9c4dddad9d0c5c3d881868186f1d6dcd0d8dd9fd2dedc">Email</a>
+    <a href="tel:+918319029608">WhatsApp</a>
+    <a href="https://rahul-digital-vibe.lovable.app/" target="_blank">Portfolio</a>
+  </div>
+</footer>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  // CURSOR
+  const cursor = document.getElementById('cursor');
+  const trail = document.getElementById('cursorTrail');
+  let mx = 0, my = 0, tx = 0, ty = 0;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx + 'px';
+    cursor.style.top = my + 'px';
+  });
+
+  function animateTrail() {
+    tx += (mx - tx) * 0.12;
+    ty += (my - ty) * 0.12;
+    trail.style.left = tx + 'px';
+    trail.style.top = ty + 'px';
+    requestAnimationFrame(animateTrail);
+  }
+  animateTrail();
+
+  document.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursor.style.width = '20px';
+      cursor.style.height = '20px';
+      cursor.style.background = 'transparent';
+      cursor.style.border = '2px solid var(--accent)';
+    });
+    el.addEventListener('mouseleave', () => {
+      cursor.style.width = '10px';
+      cursor.style.height = '10px';
+      cursor.style.background = 'var(--accent)';
+      cursor.style.border = 'none';
+    });
+  });
+
+  // NAV SCROLL
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 60);
+  });
+
+  // SCROLL REVEAL
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => observer.observe(el));
+
+  // SKILL BARS
+  const barObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.querySelectorAll('.skill-bar-fill').forEach(bar => {
+          bar.style.width = bar.dataset.width;
+        });
+      }
+    });
+  }, { threshold: 0.2 });
+  document.querySelectorAll('.skills-grid').forEach(el => barObserver.observe(el));
+
+  // SMOOTH HASH SCROLL
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    a
